@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Weather, Felt turns live weather data into an interactive atmospheric portrait."
+    /> <!-- Gives a short description of the site to search engines.-->
+
+    <title>Weather, Felt — A Live Portrait of Place</title>
+    
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <canvas id="weather-canvas" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#experience">
+        <span class="brand-orbit" aria-hidden="true"></span>
+        <span>Weather, Felt</span>
+      </a>
+
+      <div class="header-actions">
+        <button id="motion-toggle" class="text-button" type="button" aria-pressed="false">
+          Pause motion
+        </button>
+
+        <button id="unit-toggle" class="unit-toggle" type="button" aria-label="Change temperature unit">
+          <span data-unit="c" class="active">°C</span>
+          <span data-unit="f">°F</span>
+        </button>
+        
+      </div>
+    </header>
+
+    <main id="experience">
+      <section class="hero" aria-labelledby="place-name">
+        <div class="hero-copy">
+          <p class="eyebrow"><span id="live-dot"></span> Live atmosphere</p>
+          <h1 id="place-name">Toronto</h1>
+          <p id="place-meta" class="place-meta">Ontario, Canada</p>
+
+          <div class="condition-line">
+            <span id="temperature">--°</span>
+            <span id="condition">Reading the sky…</span>
+          </div>
+
+          <p id="weather-poem" class="weather-poem" aria-live="polite">
+            The atmosphere is becoming visible.
+          </p>
+
+        </div>
+
+        <div class="celestial" aria-hidden="true">
+          <div class="celestial-halo"></div>
+          <div class="celestial-body"></div>
+        </div>
+
+        <dl class="metrics" aria-label="Weather details for the requested hour">
+          <div>
+            <dt>Feels like</dt>
+            <dd id="feels-like">--°</dd>
+          </div>
+
+          <div>
+            <dt>Wind</dt>
+            <dd><span id="wind-speed">--</span> <small>km/h</small></dd>
+          </div>
+
+          <div>
+            <dt>Humidity</dt>
+            <dd><span id="humidity">--</span><small>%</small></dd>
+          </div>
+
+          <div>
+            <dt>Cloud cover</dt>
+            <dd><span id="cloud-cover">--</span><small>%</small></dd>
+          </div>
+
+        </dl>
+      </section>
+
+      <section class="controls" aria-labelledby="controls-title">
+        <div class="controls-heading">
+          <div>
+            <p class="eyebrow">Move through the atmosphere</p>
+            <h2 id="controls-title">Choose a place or an hour</h2>
+          </div>
+          <p id="last-updated" class="updated">Waiting for live data</p>
+        </div>
+
+        <!-- Form helps users search for a city and submit the request to update the weather data. -->
+        <form id="city-form" class="search-form" role="search">
+          <label for="city-input">Search any city</label>
+          <div class="search-row">
+            <input
+              id="city-input"
+              name="city"
+              type="search"
+              placeholder="e.g. Montréal, Nairobi, Seoul"
+              autocomplete="off"
+              required
+            />
+            <button type="submit">Change the sky</button>
+          </div>
+          <p id="search-status" class="search-status" role="status"></p>
+        </form>
+
+        <div class="presets" aria-label="Preset cities">
+          <button type="button" data-city="Toronto" data-region="Ontario, Canada" data-lat="43.6532" data-lon="-79.3832">Toronto</button>
+          <button type="button" data-city="Vancouver" data-region="British Columbia, Canada" data-lat="49.2827" data-lon="-123.1207">Vancouver</button>
+          <button type="button" data-city="Reykjavík" data-region="Iceland" data-lat="64.1466" data-lon="-21.9426">Reykjavík</button>
+          <button type="button" data-city="Tokyo" data-region="Japan" data-lat="35.6762" data-lon="139.6503">Tokyo</button>
+        </div>
+
+        <div class="timeline-wrap">
+
+          <div class="timeline-labels">
+            <h3>Next 12 hours</h3>
+            <p>Select an hour to let the forecast reshape the scene.</p>
+          </div>
+          <div id="timeline" class="timeline" aria-label="Hourly forecast"></div>
+        </div>
+
+      </section>
+
+      <section class="data-story" aria-labelledby="data-title">
+        <div>
+          <p class="eyebrow">Data becomes material</p>
+          <h2 id="data-title">Every number leaves a visual trace</h2>
+        </div>
+        <div class="mapping-list">
+          <article>
+            <span class="mapping-mark temperature-mark"></span>
+            <h3>Temperature shapes colour</h3>
+            <p>Cold air shifts the palette toward blue. Warm air pulls light toward coral and gold.</p>
+          </article>
+
+          <article>
+            <span class="mapping-mark wind-mark"></span>
+            <h3>Wind controls movement</h3>
+            <p>Live speed and direction change the pace and path of every particle in the scene.</p>
+          </article>
+
+          <article>
+            <span class="mapping-mark rain-mark"></span>
+            <h3>Precipitation adds texture</h3>
+            <p>Rain, snow, and clear conditions each produce a different atmospheric layer.</p>
+          </article>
+
+          <article>
+            <span class="mapping-mark cloud-mark"></span>
+            <h3>Clouds change visibility</h3>
+            <p>Cloud cover adjusts particle density, while humidity remains visible in the live metrics.</p>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="raw-data" aria-labelledby="raw-title">
+        <div>
+          <p class="eyebrow">Live JSON</p>
+          <h2 id="raw-title">The data behind this moment</h2>
+          <p>The interface reads current and hourly forecast values from Open-Meteo.</p>
+        </div>
+
+        <button id="data-toggle" type="button" aria-expanded="false" aria-controls="json-panel">View data</button>
+        <pre id="json-panel" hidden><code id="json-output">Loading…</code></pre>
+
+      </section>
+    </main>
+
+    <footer>
+      <p>Designed by Helen Wei, Madhav Chandgothia &amp; Ricardo Chen for CCT360</p>
+      <p>Weather data: <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
+    </footer>
+
+    <noscript>This experience needs JavaScript to retrieve and transform live weather data.</noscript>
+    <script src="script.js"></script>
+  </body>
+</html>
